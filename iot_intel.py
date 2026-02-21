@@ -1,50 +1,57 @@
-import networkx as nx
-from pyvis.network import Network
 from mitreattack.stix20 import MitreAttackData
+from pyvis.network import Network
+import networkx as nx
 
 # --- MITRE dataset ---
 dataset = "ics-attack.json"
 
-
 # --- Get all threat groups from MITRE ATT&CK ---
 mitre_attack_data = MitreAttackData(dataset)
-groups = mitre_attack_data.get_groups()
 
-def get_groups():
-    ics_groups = []
-    for group in groups:
-        ics_groups.append(group["name"])
-
-    return ics_groups 
-
-
-# --- Build a NetworkX graph of the groups --- 
-def build_group_graph(group_list) -> nx.DiGraph:
+# --- Define the graph, add nodes and edges ---
+def graph():
+    groups = mitre_attack_data.get_groups()
+    
     G = nx.DiGraph()
-    for group in group_list:
-        group_name = group
+    for group in groups:
+        group_name = group['name']
         G.add_node(
             group_name,
-            node_type = "group"            
+            group="group",
+            title='test run',
+            shape='square'
         )
+        
+        software = mitre_attack_data.get_software_used_by_group(group['id'])
+        for s in software:
+            software_name = s["object"]["name"]
+            G.add_node(
+                software_name,
+                group="software",
+                title='hmmmm',
+                shape='dot'
+            )
+    
+            G.add_edge(
+                group_name,
+                software_name
+            )
+            
     return G
+
 
 # --- Write the graph to HTML using pyvis ---
 def write_html(graph):
-    net = Network()
+    net = Network(directed=True)
     net.from_nx(graph)
-    net.write_html("my.html")
-    print(f"done")
-
-
+    net.write_html("maybeeee.html")
+    print("done")
+ 
 # --- Main function ---
 def main():
-    ics_groups = get_groups()
-    group_graph = build_group_graph(group_list=ics_groups)
-    write_html(graph=group_graph)
+    G = graph()
+    write_html(G)
+
     
 if __name__ == "__main__":
     main()
-
-
-
