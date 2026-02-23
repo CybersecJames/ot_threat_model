@@ -2,3 +2,5 @@
 test.py
 toy_list.py
 output_graph.html
+/lib
+/pycache
