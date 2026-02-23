@@ -31,6 +31,21 @@ def graph():
             shape='square'
         )
         
+        camps = mitre_attack_data.get_campaigns_attributed_to_group(group_stix_id=group["id"])
+        for c in camps:
+            camp_name = c['object']['name']
+            G.add_node(
+                camp_name,
+                group="camp",
+                title=fill(c["object"]['description'], 50),
+                shape='triangle'
+            )
+            
+            G.add_edge(
+                group_name,
+                camp_name
+            )
+        
         techs = mitre_attack_data.get_techniques_used_by_group(group_stix_id=group["id"])
         
         for t in techs:
@@ -46,6 +61,9 @@ def graph():
                 group_name,
                 tech_name
             )
+
+
+   
         
         software = mitre_attack_data.get_software_used_by_group(group['id'])
         for s in software:
@@ -60,6 +78,11 @@ def graph():
             G.add_edge(
                 group_name,
                 software_name
+            )
+            
+            G.add_edge(
+                software_name,
+                tech_name
             )
             
     return G
