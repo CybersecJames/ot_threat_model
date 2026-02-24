@@ -22,9 +22,9 @@ def graph():
         G.add_node(
             group_name,
             group="group",
-            title='group',
-            shape='square'
-        )
+            shape='square',
+            title=group.get("description")
+            )
         
         camps = mitre_attack_data.get_campaigns_attributed_to_group(group_stix_id=group["id"])
         for c in camps:
