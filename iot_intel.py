@@ -12,14 +12,9 @@ dataset = "ics-attack.json"
 # --- Get all threat groups from MITRE ATT&CK ---
 mitre_attack_data = MitreAttackData(dataset)
 
-def get_groups():
-    groups = mitre_attack_data.get_groups()
-    return groups
-
 # --- Define the graph, add nodes and edges ---
 def graph():
     groups = mitre_attack_data.get_groups()
-    
     
     G = nx.DiGraph()
     for group in groups:
@@ -61,9 +56,6 @@ def graph():
                 group_name,
                 tech_name
             )
-
-
-   
         
         software = mitre_attack_data.get_software_used_by_group(group['id'])
         for s in software:
